@@ -1,14 +1,28 @@
 const { Contact } = require('../models')
 
-const getAll = (userId) => {
-  return Contact.find({ owner: userId }).populate('owner', 'email')
+const getAll = (userId, query) => {
+  const { page = 1, limit = 20, favorite } = query
+
+  const options = {
+    page,
+    limit
+  }
+
+  const populate = { path: 'owner', select: 'email' }
+
+  const opt = { ...options, populate }
+
+  if (favorite) {
+    return Contact.paginate({ owner: userId, favorite }, opt)
+  }
+
+  return Contact.paginate({ owner: userId }, opt)
 }
 
 const getById = async (id) => {
   try {
     return await Contact.findById(id)
   } catch (error) {
-    console.log(error.message)
     if (error.message.includes('Cast to ObjectId failed')) return null
     throw error
   }

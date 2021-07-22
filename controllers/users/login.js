@@ -1,14 +1,13 @@
-const { User } = require('../../models')
+const { user: service } = require('../../services')
 const { HttpCode } = require('../../helpers/constants')
 const jwt = require('jsonwebtoken')
+
 require('dotenv').config()
 const { SECRET_KEY } = process.env
 
 const login = async (req, res, next) => {
-  const { email, password } = req.body
-  const user = await User.findOne({ email })
-
-  if (!user || !user.validPassword(password)) {
+  const user = await service.getValidUser(req.body)
+  if (!user) {
     return res.status(HttpCode.UNAUTHORIZED).json({
       status: 'error',
       code: HttpCode.UNAUTHORIZED,

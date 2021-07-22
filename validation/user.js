@@ -23,6 +23,10 @@ const schemaLogin = Joi.object({
     .required()
 })
 
+const schemaUpdateSubscription = Joi.object({
+  subscription: Joi.string().valid('starter', 'pro', 'business').required()
+})
+
 const validateUser = (schema, body, next) => {
   const { error } = schema.validate(body)
   if (error) {
@@ -42,4 +46,8 @@ module.exports.validateCreateUser = (req, _, next) => {
 
 module.exports.validateLogInUser = (req, _, next) => {
   return validateUser(schemaLogin, req.body, next)
+}
+
+module.exports.validateUpdateSubsctription = (req, _, next) => {
+  return validateUser(schemaUpdateSubscription, req.body, next)
 }

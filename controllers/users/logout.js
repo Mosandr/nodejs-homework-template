@@ -1,13 +1,10 @@
-const { User } = require('../../models')
 const { HttpCode } = require('../../helpers/constants')
-const getPaylodFromToken = require('../../helpers/getPayloadFromToken')
 
 const logout = async (req, res, next) => {
   try {
-    const { id } = getPaylodFromToken(req)
-    const user = await User.findById(id)
+    const { user } = req
 
-    if (!id || !user) {
+    if (!user) {
       return res.status(HttpCode.UNAUTHORIZED).json({
         status: 'error',
         code: HttpCode.UNAUTHORIZED,

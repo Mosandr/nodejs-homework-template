@@ -1,9 +1,9 @@
-const { User } = require('../../models')
+const { user: service } = require('../../services')
 const { HttpCode } = require('../../helpers/constants')
 
 const register = async (req, res, next) => {
-  const { email, password } = req.body
-  const user = await User.findOne({ email })
+  const { email } = req.body
+  const user = await service.getOne({ email })
   if (user) {
     return res.status(HttpCode.CONFLICT).json({
       status: 'error',
@@ -14,9 +14,7 @@ const register = async (req, res, next) => {
   }
 
   try {
-    const newUser = new User({ email })
-    newUser.setPassword(password)
-    await newUser.save()
+    const newUser = await service.add(req.body)
     res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,

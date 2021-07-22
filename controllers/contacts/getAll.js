@@ -4,7 +4,7 @@ const { HttpCode } = require('../../helpers/constants')
 const getAll = async (req, res, next) => {
   const { id } = req.user
   try {
-    const contacts = await service.getAll(id)
+    const { docs: contacts } = await service.getAll(id, req.query)
 
     res.status(HttpCode.OK).json({
       status: 'succes',
