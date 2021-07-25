@@ -5,6 +5,7 @@ const updateStatus = async (req, res, next) => {
   try {
     const { contactId } = req.params
     const { body } = req
+    const { id: userId } = req.user
 
     if (!body.favorite) {
       return next({
@@ -13,7 +14,11 @@ const updateStatus = async (req, res, next) => {
         data: 'Bad Request'
       })
     }
-    const contact = await service.updateStatusContact(contactId, req.body)
+    const contact = await service.updateStatusContact(
+      userId,
+      contactId,
+      req.body
+    )
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'succes',

@@ -19,9 +19,12 @@ const getAll = (userId, query) => {
   return Contact.paginate({ owner: userId }, opt)
 }
 
-const getById = async (id) => {
+const getById = async (userId, id) => {
   try {
-    return await Contact.findById(id)
+    return await Contact.findOne({ owner: userId, _id: id }).populate(
+      'owner',
+      'email'
+    )
   } catch (error) {
     if (error.message.includes('Cast to ObjectId failed')) return null
     throw error
@@ -32,27 +35,35 @@ const add = (newContact) => {
   return Contact.create(newContact)
 }
 
-const remove = async (id) => {
+const remove = async (userId, id) => {
   try {
-    return await Contact.findByIdAndRemove(id)
+    return await Contact.findOneAndRemove({ owner: userId, _id: id })
   } catch (error) {
     if (error.message.includes('Cast to ObjectId failed')) return null
     throw error
   }
 }
 
-const update = async (id, updateContact) => {
+const update = async (userId, id, updateContact) => {
   try {
-    return await Contact.findByIdAndUpdate(id, updateContact, { new: true })
+    return await Contact.findOneAndUpdate(
+      { owner: userId, _id: id },
+      updateContact,
+      { new: true }
+    )
   } catch (error) {
     if (error.message.includes('Cast to ObjectId failed')) return null
     throw error
   }
 }
 
-const updateStatusContact = async (id, updateContact) => {
+const updateStatusContact = async (userId, id, updateContact) => {
   try {
-    return await Contact.findByIdAndUpdate(id, updateContact, { new: true })
+    return await Contact.findOneAndUpdate(
+      { owner: userId, _id: id },
+      updateContact,
+      { new: true }
+    )
   } catch (error) {
     if (error.message.includes('Cast to ObjectId failed')) return null
     throw error

@@ -4,7 +4,8 @@ const { HttpCode } = require('../../helpers/constants')
 const update = async (req, res, next) => {
   try {
     const { contactId } = req.params
-    const contact = await service.update(contactId, req.body)
+    const { id: userId } = req.user
+    const contact = await service.update(userId, contactId, req.body)
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'succes',
