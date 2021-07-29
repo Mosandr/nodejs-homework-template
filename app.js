@@ -1,11 +1,10 @@
 const express = require('express')
+const path = require('path')
 const logger = require('morgan')
 const cors = require('cors')
 const { HttpCode } = require('./helpers/constants')
 const helmet = require('helmet')
-const rateLimit = require('express-rate-limit')
-
-const limiter = rateLimit({ windowMs: 900000, max: 100 })
+const { apiLimiter } = require('./middlewares/limiters')
 
 const contactsRouter = require('./routes/api/contacts')
 const usersRouter = require('./routes/api/users')
@@ -22,9 +21,14 @@ app.use(logger(formatsLogger))
 app.use(cors())
 app.use(express.json({ limit: 10000 }))
 
+const filePath = path.join(__dirname, 'index.html')
+
+console.log(filePath)
+
 require('./configs/passport-config')
 
-app.use('/api/', limiter)
+app.use(express.static(path.join(__dirname, 'public')))
+app.use('/api/', apiLimiter)
 app.use('/api/users', usersRouter)
 app.use('/api/contacts', contactsRouter)
 
