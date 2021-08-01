@@ -4,16 +4,7 @@ const fs = require('fs/promises')
 const path = require('path')
 require('dotenv').config()
 const Jimp = require('jimp')
-const cloudinary = require('cloudinary').v2
-
-const { API_KEY, API_SECRET, CLOUD_NAME } = process.env
-
-cloudinary.config({
-  cloud_name: CLOUD_NAME,
-  api_key: API_KEY,
-  api_secret: API_SECRET,
-  secure: true,
-})
+const upload = require('../../helpers/cloudinaryUplod')
 
 const updateAvatar = async (req, res, next) => {
   try {
@@ -37,6 +28,8 @@ const updateAvatar = async (req, res, next) => {
       ),
     )
 
+    let cloudinaryUrl = null
+
     if (req.file) {
       const img = await Jimp.read(filepath)
       await img
@@ -48,9 +41,11 @@ const updateAvatar = async (req, res, next) => {
         )
         .writeAsync(filepath)
       await fs.rename(filepath, destination)
+      const result = await upload(destination)
+      cloudinaryUrl = result.url
     }
 
-    const avatarURL = { avatarURL: destination }
+    const avatarURL = { avatarURL: cloudinaryUrl }
 
     const user = await service.update(userId, avatarURL)
     if (user) {
