@@ -7,33 +7,37 @@ const userSchema = Schema(
   {
     password: {
       type: String,
-      required: [true, 'Password is required']
+      required: [true, 'Password is required'],
     },
     email: {
       type: String,
       match: [
         /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/,
-        'Email must be in format text@text.domain'
+        'Email must be in format text@text.domain',
       ],
       required: [true, 'Email is required'],
-      unique: true
+      unique: true,
     },
     subscription: {
       type: String,
       enum: ['starter', 'pro', 'business'],
-      default: 'starter'
+      default: 'starter',
     },
     token: {
-      type: String
+      type: String,
     },
     avatarURL: {
       type: String,
       default: function () {
         this.avatarURL = gravatar.url(this.email, { s: '250' }, true)
-      }
-    }
+      },
+    },
+    avatarCloudId: {
+      type: String,
+      default: null,
+    },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false, timestamps: true },
 )
 
 userSchema.methods.setPassword = function (password) {

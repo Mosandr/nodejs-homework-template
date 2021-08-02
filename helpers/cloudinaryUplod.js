@@ -12,10 +12,14 @@ cloudinary.config({
 
 const upload = pathFile => {
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload(pathFile, {}, function (err, result) {
-      if (err) reject(err)
-      if (result) resolve(result)
-    })
+    cloudinary.uploader.upload(
+      pathFile,
+      { folder: 'avatars', tranformation: {} },
+      function (err, result) {
+        if (err) reject(err)
+        if (result) resolve(result)
+      },
+    )
   })
 }
 

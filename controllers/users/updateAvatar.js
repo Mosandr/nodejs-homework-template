@@ -28,7 +28,8 @@ const updateAvatar = async (req, res, next) => {
       ),
     )
 
-    let cloudinaryUrl = null
+    let avatarURL = null
+    let avatarCloudId = null
 
     if (req.file) {
       const img = await Jimp.read(filepath)
@@ -42,12 +43,14 @@ const updateAvatar = async (req, res, next) => {
         .writeAsync(filepath)
       await fs.rename(filepath, destination)
       const result = await upload(destination)
-      cloudinaryUrl = result.url
+      avatarURL = result.secure_url
+      avatarCloudId = result.public_id
     }
 
-    const avatarURL = { avatarURL: cloudinaryUrl }
-
-    const user = await service.update(userId, avatarURL)
+    const user = await service.update(userId, {
+      avatarURL: avatarURL,
+      avatarCloudId: avatarCloudId,
+    })
     if (user) {
       return res.status(HttpCode.OK).json({
         status: 'succes',
@@ -56,6 +59,7 @@ const updateAvatar = async (req, res, next) => {
           user: {
             email: user.email,
             avatarURL: user.avatarURL,
+            avatarCloudId: user.avatarCloudId,
           },
         },
       })
