@@ -4,11 +4,11 @@ const fs = require('fs/promises')
 const path = require('path')
 require('dotenv').config()
 const Jimp = require('jimp')
-const upload = require('../../helpers/cloudinaryUplod')
+const uploader = require('../../helpers/cloudinaryUploader')
 
 const updateAvatar = async (req, res, next) => {
   try {
-    const { _id: userId } = req.user
+    const { _id: userId, avatarCloudId: oldAvatarId } = req.user
     const { path: filepath, originalname } = req.file
 
     if (!req.file) {
@@ -42,7 +42,8 @@ const updateAvatar = async (req, res, next) => {
         )
         .writeAsync(filepath)
       await fs.rename(filepath, destination)
-      const result = await upload(destination)
+      const result = await uploader.upload(destination)
+      await fs.unlink(destination)
       avatarURL = result.secure_url
       avatarCloudId = result.public_id
     }
@@ -52,6 +53,7 @@ const updateAvatar = async (req, res, next) => {
       avatarCloudId: avatarCloudId,
     })
     if (user) {
+      await uploader.destroy(oldAvatarId)
       return res.status(HttpCode.OK).json({
         status: 'succes',
         code: HttpCode.OK,

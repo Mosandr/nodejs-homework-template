@@ -23,4 +23,13 @@ const upload = pathFile => {
   })
 }
 
-module.exports = upload
+const destroy = avatarId => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(avatarId, function (err, result) {
+      if (err) reject(err)
+      if (result) resolve(result)
+    })
+  })
+}
+
+module.exports = { upload, destroy }
