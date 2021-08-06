@@ -2,8 +2,9 @@ const { contact: service } = require('../../services')
 const { HttpCode } = require('../../helpers/constants')
 
 const add = async (req, res, next) => {
+  const { id: userId } = req.user
   try {
-    const newContact = { ...req.body, owner: req.user.id }
+    const newContact = { ...req.body, owner: userId }
     const contact = await service.add(newContact)
     res.status(HttpCode.CREATED).json({
       status: 'succes',

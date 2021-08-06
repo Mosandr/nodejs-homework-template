@@ -3,8 +3,9 @@ const { HttpCode } = require('../../helpers/constants')
 
 const getById = async (req, res, next) => {
   try {
+    const { id: userId } = req.user
     const { contactId } = req.params
-    const contact = await service.getById(contactId)
+    const contact = await service.getById(userId, contactId)
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'succes',

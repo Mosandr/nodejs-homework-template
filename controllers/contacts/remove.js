@@ -4,7 +4,8 @@ const { HttpCode } = require('../../helpers/constants')
 const remove = async (req, res, next) => {
   try {
     const { contactId } = req.params
-    const contact = await service.remove(contactId)
+    const { id: userId } = req.user
+    const contact = await service.remove(userId, contactId)
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'succes',
