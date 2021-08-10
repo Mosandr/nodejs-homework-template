@@ -7,10 +7,10 @@ const schemaCreate = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] }
+      tlds: { allow: ['com', 'net'] },
     })
     .required(),
-  subscription: Joi.string().valid('starter', 'pro', 'business').optional()
+  subscription: Joi.string().valid('starter', 'pro', 'business').optional(),
 })
 
 const schemaLogin = Joi.object({
@@ -18,13 +18,22 @@ const schemaLogin = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] }
+      tlds: { allow: ['com', 'net'] },
     })
-    .required()
+    .required(),
 })
 
 const schemaUpdateSubscription = Joi.object({
-  subscription: Joi.string().valid('starter', 'pro', 'business').required()
+  subscription: Joi.string().valid('starter', 'pro', 'business').required(),
+})
+
+const schemaVerifyEmail = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ['com', 'net'] },
+    })
+    .required(),
 })
 
 const validateUser = (schema, body, next) => {
@@ -34,7 +43,7 @@ const validateUser = (schema, body, next) => {
     return next({
       status: HttpCode.BAD_REQUEST,
       message,
-      data: 'Bad Request'
+      data: 'Bad Request',
     })
   }
   next()
@@ -50,4 +59,7 @@ module.exports.validateLogInUser = (req, _, next) => {
 
 module.exports.validateUpdateSubsctription = (req, _, next) => {
   return validateUser(schemaUpdateSubscription, req.body, next)
+}
+module.exports.validateVerifyEmail = (req, _, next) => {
+  return validateUser(schemaVerifyEmail, req.body, next)
 }
