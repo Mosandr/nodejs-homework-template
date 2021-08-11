@@ -23,8 +23,6 @@ app.use(express.json({ limit: 10000 }))
 
 const filePath = path.join(__dirname, 'index.html')
 
-console.log(filePath)
-
 require('./configs/passport-config')
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -37,7 +35,7 @@ app.use((req, res, next) => {
     status: 'error',
     code: HttpCode.NOT_FOUND,
     message: `Use api on routes ${req.baseUrl}/api/contacts`,
-    data: 'Not Found'
+    data: 'Not Found',
   })
 })
 
@@ -47,7 +45,7 @@ app.use((err, req, res, next) => {
     status: err.status === 500 ? 'fail' : 'error',
     code: err.status,
     message: err.message,
-    data: err.status === 500 ? 'Internal Server Error' : err.data
+    data: err.status === 500 ? 'Internal Server Error' : err.data,
   })
 })
 

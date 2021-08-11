@@ -12,13 +12,13 @@ const login = async (req, res, next) => {
       return res.status(HttpCode.UNAUTHORIZED).json({
         status: 'error',
         code: HttpCode.UNAUTHORIZED,
-        message: 'Email or password is wrong',
-        data: 'Unauthorized'
+        message: 'Email or password is wrong or unverified',
+        data: 'Unauthorized',
       })
     }
 
     const payload = {
-      id: user._id
+      id: user._id,
     }
 
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' })
@@ -31,9 +31,9 @@ const login = async (req, res, next) => {
         token,
         user: {
           email: user.email,
-          subscription: user.subscription
-        }
-      }
+          subscription: user.subscription,
+        },
+      },
     })
   } catch (error) {
     next(error)
