@@ -14,7 +14,7 @@ const add = async ({ email, password }) => {
   try {
     await sendEmail(email, verifyToken)
   } catch (error) {
-    throw Error('Service unavailable')
+    throw error
   }
 
   const newUser = await new User({ email, verifyToken })
