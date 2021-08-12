@@ -1,9 +1,19 @@
-const sgMail = require('@sendgrid/mail')
+const nodemailer = require('nodemailer')
 const Mailgen = require('mailgen')
 
 require('dotenv').config()
-const { API_SENDGRID, PORT } = process.env
-sgMail.setApiKey(API_SENDGRID)
+
+const config = {
+  host: 'smtp.meta.ua',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASSWORD,
+  },
+}
+
+const transporter = nodemailer.createTransport(config)
 
 const generateEmail = token => {
   const mailGenerator = new Mailgen({
@@ -38,16 +48,16 @@ const generateEmail = token => {
 }
 
 const sendEmail = async (email, token) => {
-  const emailBody = generateEmail(token)
+  const emailBody = await generateEmail(token)
 
   const msg = {
+    from: process.env.MAIL_USER, // Use the email address or domain you verified above
     to: email,
-    from: 'mollinne2@gmail.com', // Use the email address or domain you verified above
     subject: 'Contact App verification',
     html: emailBody,
   }
 
-  await sgMail.send(msg)
+  await transporter.sendMail(msg)
 }
 
 module.exports = { sendEmail }
