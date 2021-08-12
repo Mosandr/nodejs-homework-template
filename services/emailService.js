@@ -11,7 +11,7 @@ const generateEmail = token => {
     product: {
       // Appears in header & footer of e-mails
       name: 'Contact App',
-      link: `http://localhost:${PORT}/`,
+      link: `https://contacts-app-by-mosol.herokuapp.com`,
     },
   })
 
@@ -24,7 +24,7 @@ const generateEmail = token => {
         button: {
           color: '#22BC66', // Optional action button color
           text: 'Confirm your account',
-          link: `http://localhost:${PORT}/api/users/verify/${token}`,
+          link: `https://contacts-app-by-mosol.herokuapp.com/api/users/verify/${token}`,
         },
       },
       outro:
